@@ -1,0 +1,74 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa de Estoque</ui:define>
+    
+    <ui:define name="corpo">
+    	<h1>Pesquisa de estoques</h1>
+    	
+    	<h:form id="frmPesquisa">
+    		<p:messages id="messages" autoUpdate="true" closable="true" />
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:commandButton value="Novo" id="botaoNovo" action="CadastroEstoque"/>
+    			</p:toolbarGroup>
+    		</p:toolbar>
+    	
+	    	<p:dataTable id="estoquesTable" value="#{pesquisaEstoqueBean.lazyEstoques}" var="estoque"
+		    		style="margin-top: 20px" emptyMessage="Nenhum estoque encontrado." rows="5"
+		    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+		    		lazy="true" rowsPerPageTemplate="5,10,15">
+		    		
+		    		<p:column headerText="Código" style="text-align: center; width: 100px">
+		    			<h:outputText value="#{estoque.codigo}" />
+		    		</p:column>
+		    		<p:column headerText="Descricao">
+		    			<h:outputText value="#{estoque.descricao}" />
+		    		</p:column>
+		    		<p:column headerText="Data Inclusao">
+		    			<h:outputText value="#{estoque.dataCriacao}" />
+		    		</p:column>
+		    		<p:column headerText="Data Saída">
+		    			<h:outputText value="#{estoque.dataModificacao}" />
+		    		</p:column>
+		    		<p:column headerText="Marcas" style="width: 100px; text-align: center">
+		    			<p:commandButton icon="ui-icon-extlink" title="Marcas" action="#{pesquisaEstoqueBean.buscarEstoqueComMarcas}"
+		    					process="@this" oncomplete="mostraMarcas.show()" update=":frmPesquisa:mostraAcessoriosDialog">
+		    				<f:setPropertyActionListener target="#{pesquisaEstoqueBean.estoqueSelecionado}" value="#{estoque}" />
+		    			</p:commandButton>
+		    		</p:column>
+		    		<p:column style="width: 100px; text-align: center">
+		    			<p:button outcome="CadastroEstoque" icon="ui-icon-pencil" title="Editar">
+		    				<f:param name="estoque" value="#{estoque.codigo}"/>
+		    			</p:button>
+		    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="confirmacaoExclusao.show()"
+								process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+							<f:setPropertyActionListener target="#{pesquisaEstoqueBean.estoqueSelecionado}" value="#{estoque}" />
+						</p:commandButton>
+		    		</p:column>
+		    </p:dataTable>
+		   
+		    <p:confirmDialog id="confirmacaoExclusaoDialog" widgetVar="confirmacaoExclusao"
+	        		message="Tem certeza que deseja excluir o estoque de #{pesquisaEstoqueBean.estoqueSelecionado.descricao}?"  
+	                header="Exclusão de estoque" severity="alert">
+	        	<p:button value="Não" onclick="confirmacaoExclusao.hide(); return false;" />
+	        	<p:commandButton value="Sim" update=":frmPesquisa:estoquesTable"
+	        			onclick="confirmacaoExclusao.hide()" action="#{pesquisaEstoqueBean.excluir}" />
+	    	</p:confirmDialog>
+	    	
+	    	<p:dialog id="mostraAcessoriosDialog" header="Marcas" widgetVar="mostraMarcas" modal="true">
+    			<p:dataList value="#{pesquisaEstoqueBean.estoqueSelecionado.marcas}" var="marca" itemType="disc"
+    					rendered="#{not empty pesquisaEstoqueBean.estoqueSelecionado.marcas}">
+    				#{marca.nome}
+    			</p:dataList>
+    			<h:outputText value="Nenhum produto" rendered="#{empty pesquisaEstoqueBean.estoqueSelecionado.marcas}"/>
+			</p:dialog>
+	    	
+	    </h:form>
+    </ui:define>
+</ui:composition>
