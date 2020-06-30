@@ -1,0 +1,61 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa de Mercado</ui:define>
+    
+    <ui:define name="corpo">
+    	<h1>Pesquisa de mercado</h1>
+    	
+    	<h:form id="frmFiltro">
+    		<p:messages id="messages" autoUpdate="true" closable="true" />
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+					<p:commandButton value="Pesquisa" id="botaoPesquisa" action="#{pesquisaMercadoBean.pesquisar}" update="alugueisTable"/>
+				</p:toolbarGroup>
+    		</p:toolbar>
+    		
+    		<p:panelGrid columns="2" id="painel" style="width: 100%" columnClasses="rotulo, campo">
+				<p:outputLabel value="Data da entrega" for="dataEntrega"/>
+	    		<p:calendar id="dataEntrega" size="20" value="#{pesquisaMercadoBean.mercado.dataEntrada}" pattern="dd/MM/yyyy"/>
+			    
+			    <p:outputLabel value="Produto" for="modeloCarro"/>
+			    <p:selectOneMenu id="modeloCarro" value="#{pesquisaMercadoBean.estoque.produto.nome}">
+	    			<f:selectItem itemLabel="Selecione o modelo" />
+	    			<f:selectItems value="#{pesquisaMercadoBean.produtos}" var="produtos" 
+						itemLabel="#{produtos.descricao}" itemValue="#{produtos}"/>
+	    		</p:selectOneMenu>
+			</p:panelGrid>
+	    	<p:dataTable id="alugueisTable" value="#{pesquisaMercadoBean.mercados}" var="mercado"
+		    		style="margin-top: 20px" emptyMessage="Nenhum mercado encontrado." rows="20"
+		    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+		    		
+		    	<p:column headerText="Código" style="text-align: center; width: 100px">
+	    			<h:outputText value="#{mercado.codigo}" />
+	    		</p:column>
+	    		<p:column headerText="Data da Entrega">
+	    			<h:outputText value="#{mercado.dataEntrada}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Data Saida">
+	    			<h:outputText value="#{mercado.dataSaida}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy"/>
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Valor total">
+	    			<h:outputText value="#{mercado.valorVenda}" />
+	    		</p:column>
+	    		<p:column headerText="Produto">
+	    			<h:outputText value="#{mercado.estoque.produto} - #{mercado.estoque.produto.descricao}" />
+	    		</p:column>
+	    		
+		    </p:dataTable>
+		</h:form>
+    </ui:define>
+</ui:composition>

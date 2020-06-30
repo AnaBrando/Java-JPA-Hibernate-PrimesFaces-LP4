@@ -20,13 +20,12 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
+@Entity
 @NamedQueries({
 	@NamedQuery(name="Estoque.buscarTodos",query="select e from Estoque e"),
 	@NamedQuery(name="Estoque.buscarEstoqueComMarcas",query="select e "+"from Estoque e JOIN e.marcas m "
 													  +"where e.codigo = :codigo")
 })
-@Entity
 public class Estoque {
 	
 	private Long codigo;

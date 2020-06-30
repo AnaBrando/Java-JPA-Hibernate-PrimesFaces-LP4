@@ -27,7 +27,7 @@ public class EstoqueDAO implements Serializable{
 	
 	@SuppressWarnings("unchecked")
 	public List<Estoque> buscarTodos(){
-		return manager.createQuery("Estoque.buscarTodos").getResultList();
+		return manager.createQuery("from Estoque").getResultList();
 	}
 	
 	@Transactional
